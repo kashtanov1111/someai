@@ -17,7 +17,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from .views import CustomLoginView, get_custom_refresh_view, CustomRegisterView
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/", include("posts.urls")),
+    path("api-auth/", include("rest_framework.urls")),
+    path("api/v1/auth/login/", CustomLoginView.as_view(), name="rest_login"),
+    path(
+        "api/v1/auth/token/refresh/",
+        get_custom_refresh_view().as_view(),
+        name="token_refresh",
+    ),
+    path("api/v1/auth/", include("dj_rest_auth.urls")),
+    path(
+        "api/v1/auth/registration/", CustomRegisterView.as_view(), name="rest_register"
+    ),
+    path("api/v1/auth/registration/", include("dj_rest_auth.registration.urls")),
 ]
